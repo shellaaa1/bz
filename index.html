@@ -1,199 +1,1079 @@
-<!-- /**************************
- * Created by redy on 2017-3-31.
- * https://github.com/insoxin/API
- * LICENSE  AGPL v3 
- * 请尊重原作,勿删乱改版权.
-***************************/-->
 <!DOCTYPE html>
-<html lang="zh_CN">
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>INSO壁纸</title>
-        <!--[if IE]>
-        	<link rel="stylesheet" href="//isoyu.com/static/css/ie.css" rel="stylesheet" type="text/css" />
-        <![endif]-->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-		<meta property="og:site_name" content="INSO"/>
-		<meta name="referrer" content="origin"/>
-		<meta property="og:type" content="website"/>
-        <meta name="keywords" content="中国INSO,姬长信,热门搜索,最近热搜词,INSO,应搜,应搜索,INSO网络,INSO公司,INSO搜索,INSO谷歌,美国INSO,INSO搜索器,INSO浏览器,INSO互联网,INSO网络公司,INSO搜索引擎" />
-		<meta name="description" content="INSO是尊重您隐私的搜索引擎。建立于2007年致力成为全球最全面的搜索服务，INSO搜索创新于行业直线搜索更准、更快，高速纯净搜索网页信息，服务于安全绿色网页信息展示。" id="meta_description"/>
-		<meta property="og:description" content="INSO是尊重您隐私的搜索引擎。建立于2007年致力成为全球最全面的搜索服务，INSO搜索创新于行业直线搜索更准、更快，高速纯净搜索网页信息，服务于安全绿色网页信息展示。" id="meta_og_description"/>
-		<meta name="application-name" content="INSO"/>
-		<meta name="twitter:widgets:csp" content="on"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
-		<meta name="msapplication-TileImage" content="//isoyu.com/images/favicon-144.png"/>
-		<meta name="msapplication-TileColor" content="#FFFFFF"/>
-		<meta name="msvalidate.01" content=""/>
-		<meta name="google-site-verification" content=""/>
-		<meta http-equiv="Refresh" content="2800" />
-    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/insoxin/bz@main/bz_js/inso_img.js"></script>
-    <link href="https://cdn.jsdelivr.net/gh/insoxin/bz@main/bz_css/inso_bz.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON数据生成工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-</head>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
 
-<body>
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand brand" href="javascript:void(0)" onclick="title_image()">
-                <!-- <img alt="Brand" src="./img/simple.png"> -->
-            </a>
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
 
-            <a href="javascript:void(0)" class="navbar-brand " onclick="title_image()">INSO壁纸</a>
-        </div>
+        .toolbar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="scenery()"> <span class="glyphicon glyphicon-leaf"
-                                                                            aria-hidden="true"></span>&nbsp;风景</a></li>
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="girls()"> <span class="glyphicon glyphicon-apple"
-                                                                          aria-hidden="true"></span>&nbsp;美女</a></li>
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="animation()"> <span class="glyphicon glyphicon-eye-open"
-                                                                              aria-hidden="true"></span>&nbsp;动漫</a>
-                </li>
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(86, 171, 47, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="animals()"> <span class="glyphicon glyphicon-piggy-bank"
-                                                                            aria-hidden="true"></span>&nbsp;动物</a></li>
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="game()"> <span class="glyphicon glyphicon-king"
-                                                                         aria-hidden="true"></span>&nbsp;游戏</a></li>
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="machine()"> <span class="glyphicon glyphicon-plane"
-                                                                            aria-hidden="true"></span>&nbsp;机械</a></li>
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="paint()"> <span class="glyphicon glyphicon-erase"
-                                                                          aria-hidden="true"></span>&nbsp;手绘</a></li>
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="word()"> <span class="glyphicon glyphicon-text-size"
-                                                                         aria-hidden="true"></span>&nbsp;文字</a></li>
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
 
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">更多<span class="caret"></span></a>
+        .file-input {
+            display: none;
+        }
 
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:void(0)" onclick="visual()">视觉</a></li>
-                        <li><a href="javascript:void(0)" onclick="monogatari()">物语</a></li>
-                        <li><a href="javascript:void(0)" onclick="design()">设计</a></li>
-                        <li><a href="javascript:void(0)" onclick="emotion()">情感</a></li>
-                        <li><a href="javascript:void(0)" onclick="city()">城市</a></li>
-                        <li><a href="javascript:void(0)" onclick="film()">影视</a></li>
-                        <li><a href="javascript:void(0)" onclick="handsome()">Man</a></li>
-                        <li><a href="javascript:void(0)" onclick="stars()">明星</a></li>
-                    </ul>
+        .file-label {
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-                </li>
+        .file-label:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
 
+        .main-content {
+            padding: 30px;
+        }
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">排序<span class="caret"></span></a>
+        .json-editor {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
 
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:void(0)" onclick="popular()">最热</a></li>
-                        <li><a href="javascript:void(0)" onclick="newer()">最新</a></li>
-                    </ul>
+        .json-editor h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-                </li>
+        .key-value-pair {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            position: relative;
+        }
 
+        .key-value-pair:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-            </ul>
+        .key-input, .value-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
 
-        </div>
-    </div>
-</nav>
-<div class="container-fluid div_container-fluid">
+        .key-input:focus, .value-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-    <div id="gg" class="row">
+        .key-input {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
 
+        .value-input {
+            background: #f3e5f5;
+            border-color: #9c27b0;
+        }
 
-    </div>
+        .array-input {
+            background: #fff3e0;
+            border-color: #ff9800;
+        }
 
+        .object-input {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
 
-    <div class="row bottom_btn">
+        .pair-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
-        <input onclick="first()" id="first" type="button" class="btn btn-info" value="首页">
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
 
-        <input onclick="pre()" type="button" class="btn btn-info " value="上页">
+        .nested-container {
+            margin-left: 30px;
+            padding-left: 20px;
+            border-left: 3px solid #667eea;
+            margin-top: 10px;
+        }
 
-        <input onclick="next()" type="button" class="btn btn-info " value="下页">
+        .nested-level {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
 
-        <input onclick="random()" type="button" class="btn btn-info " value="随机">
+        .level-indicator {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-    </div>
+        .type-selector {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+            cursor: pointer;
+        }
 
-</div>
-<style type="text/css">
-		.footer {
-	          width: 96%;
-	          margin: 60px 2% 0;
-	          padding: 16px 0;
-	          text-align: center
+        .preview-panel {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .preview-panel h3 {
+            color: #f7fafc;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+
+        .status-indicator.error {
+            background: #dc3545;
+        }
+
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .template-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .template-item {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .template-item h4 {
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .template-item p {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .notification.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
             }
-
-            .page--home .footer,.page--mini .footer {
-	         position: absolute;
-	         bottom: 0;
-	         left: 0
+            
+            .key-value-pair {
+                flex-direction: column;
+                gap: 10px;
             }
-
-            .footer a {
-	         margin: 0 12px;
-	         font-family: "Arial",sans-serif;
-	         font-size: 13px;
-	         font-weight: 400;
-	         letter-spacing: 0;
-	         line-height: 16px;
-	         color: #5c6f84
-             }
-             .footer a:hover {text-decoration: underline}
-             .password{
-	         margin: 0 auto;
-	         text-align:center;   /* 水平居中 */
-
-
+            
+            .pair-controls {
+                justify-content: center;
+            }
+            
+            .nested-container {
+                margin-left: 15px;
+                padding-left: 10px;
+            }
+        }
     </style>
-	<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?82eabf4b09ff3a28dc7a5a1a2384ada3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.4/lib/darkmode-js.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="https://api.isoyu.com/js/v1.js" exte-id="548" data-size="36x140" data-color="#FF7119" data-show="1"></script>
-<div class="footer">
-<a href="https://github.com/insoxin/a" target="_blank">本站源码</a>
-<a href="https://isoyu.com/sitemap/" target="_blank">SiteMap</a>
-<a href="https://isoyu.com/spider.html" target="_blank">INSObot</a>
-<a href="https://api.isoyu.com/" target="_blank">Docker Api</a>
-<a href="https://isoyu.com/about/Index1.html" target="_blank">Privacy</a>
-<a href="https://isoyu.com/about/Index20.html" target="_blank">About</a>
-<a href="https://t.me/INS_O" target="_blank">F.A.Q.</a>
-<a href="javascript:;">© 2007-2021 isoyu.com. All Rights Reserved.</a>
-</div>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ JSON数据生成工具</h1>
+            <p>创建、编辑和导出JSON数据的强大工具</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="newJson()">
+                📄 新建JSON
+            </button>
+            <label class="file-label">
+                📁 上传JSON文件
+                <input type="file" class="file-input" id="fileInput" accept=".json" onchange="loadJsonFile(event)">
+            </label>
+            <button class="btn btn-success" onclick="addKeyValuePair()">
+                ➕ 添加键值对
+            </button>
+            <button class="btn btn-warning" onclick="showTemplates()">
+                📋 模板库
+            </button>
+            <button class="btn btn-primary" onclick="generateJson()">
+                ⬇️ 生成并下载
+            </button>
+            <button class="btn btn-secondary" onclick="previewJson()">
+                👁️ 预览JSON
+            </button>
+            <button class="btn btn-danger" onclick="clearAll()">
+                🗑️ 清空所有
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="json-editor" id="jsonEditor">
+                <h3>📝 JSON编辑器</h3>
+                <div id="keyValuePairs">
+                    <!-- 键值对将在这里动态生成 -->
+                </div>
+            </div>
+
+            <div class="preview-panel" id="previewPanel" style="display: none;">
+                <h3>👁️ JSON预览</h3>
+                <div id="jsonPreview"></div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">就绪</span>
+            </div>
+            <div class="status-item">
+                <span>键值对数量: <span id="pairCount">0</span></span>
+            </div>
+            <div class="status-item">
+                <span>嵌套层级: <span id="nestLevel">0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板选择模态框 -->
+    <div id="templateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 选择JSON模板</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="template-list" id="templateList">
+                <!-- 模板列表将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知 -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        let jsonData = {};
+        let pairCounter = 0;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+            addKeyValuePair(); // 添加第一个键值对
+        });
+
+        // 新建JSON
+        function newJson() {
+            if (confirm('确定要清空当前数据并创建新的JSON吗？')) {
+                jsonData = {};
+                document.getElementById('keyValuePairs').innerHTML = '';
+                pairCounter = 0;
+                addKeyValuePair();
+                updateStatus();
+                showNotification('已创建新的JSON文件', 'success');
+            }
+        }
+
+        // 添加键值对
+        function addKeyValuePair(parentId = null) {
+            const container = parentId ? 
+                document.getElementById(parentId) : 
+                document.getElementById('keyValuePairs');
+            
+            const pairId = `pair_${pairCounter++}`;
+            const pairDiv = document.createElement('div');
+            pairDiv.className = 'key-value-pair';
+            pairDiv.id = pairId;
+            
+            const level = getNestLevel(container);
+            const isNested = level > 0;
+            
+            if (isNested) {
+                pairDiv.classList.add('nested-level');
+                pairDiv.innerHTML = `
+                    <div class="level-indicator">
+                        ${'└─ '.repeat(level)} 嵌套层级 ${level}
+                    </div>
+                `;
+            }
+
+            pairDiv.innerHTML += `
+                <input type="text" class="key-input" placeholder="键名" onchange="updateJson()">
+                <select class="type-selector" onchange="changeValueType(this)">
+                    <option value="string">字符串</option>
+                    <option value="number">数字</option>
+                    <option value="boolean">布尔值</option>
+                    <option value="array">数组</option>
+                    <option value="object">对象</option>
+                </select>
+                <input type="text" class="value-input" placeholder="值" onchange="updateJson()">
+                <div class="pair-controls">
+                    <button class="btn btn-success btn-small" onclick="addNestedPair('${pairId}')" title="添加嵌套键值对">
+                        ➕
+                    </button>
+                    <button class="btn btn-warning btn-small" onclick="addArrayItem('${pairId}')" title="添加数组项">
+                        📋
+                    </button>
+                    <button class="btn btn-danger btn-small" onclick="removePair('${pairId}')" title="删除">
+                        🗑️
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(pairDiv);
+            updateStatus();
+        }
+
+        // 添加嵌套键值对
+        function addNestedPair(parentId) {
+            const parentDiv = document.getElementById(parentId);
+            let nestedContainer = parentDiv.querySelector('.nested-container');
+            
+            if (!nestedContainer) {
+                nestedContainer = document.createElement('div');
+                nestedContainer.className = 'nested-container';
+                parentDiv.appendChild(nestedContainer);
+            }
+            
+            addKeyValuePair(nestedContainer.id);
+        }
+
+        // 添加数组项
+        function addArrayItem(parentId) {
+            const parentDiv = document.getElementById(parentId);
+            const typeSelector = parentDiv.querySelector('.type-selector');
+            typeSelector.value = 'array';
+            
+            let arrayContainer = parentDiv.querySelector('.array-container');
+            if (!arrayContainer) {
+                arrayContainer = document.createElement('div');
+                arrayContainer.className = 'array-container';
+                arrayContainer.style.marginTop = '10px';
+                arrayContainer.style.paddingLeft = '20px';
+                arrayContainer.style.borderLeft = '3px solid #ff9800';
+                parentDiv.appendChild(arrayContainer);
+            }
+            
+            const arrayItemDiv = document.createElement('div');
+            arrayItemDiv.className = 'key-value-pair';
+            arrayItemDiv.innerHTML = `
+                <input type="text" class="array-input" placeholder="数组项" onchange="updateJson()">
+                <button class="btn btn-danger btn-small" onclick="this.parentElement.remove(); updateJson()">🗑️</button>
+            `;
+            
+            arrayContainer.appendChild(arrayItemDiv);
+            updateJson();
+        }
+
+        // 删除键值对
+        function removePair(pairId) {
+            const pairDiv = document.getElementById(pairId);
+            if (pairDiv) {
+                pairDiv.remove();
+                updateJson();
+                updateStatus();
+            }
+        }
+
+        // 获取嵌套层级
+        function getNestLevel(element) {
+            let level = 0;
+            let parent = element.parentElement;
+            while (parent && parent.classList.contains('nested-container')) {
+                level++;
+                parent = parent.parentElement;
+            }
+            return level;
+        }
+
+        // 改变值类型
+        function changeValueType(select) {
+            const pairDiv = select.closest('.key-value-pair');
+            const valueInput = pairDiv.querySelector('.value-input');
+            const type = select.value;
+            
+            switch(type) {
+                case 'boolean':
+                    valueInput.type = 'checkbox';
+                    valueInput.checked = false;
+                    break;
+                case 'number':
+                    valueInput.type = 'number';
+                    break;
+                case 'string':
+                default:
+                    valueInput.type = 'text';
+                    break;
+            }
+            
+            updateJson();
+        }
+
+        // 更新JSON数据
+        function updateJson() {
+            jsonData = {};
+            const pairs = document.querySelectorAll('.key-value-pair');
+            
+            pairs.forEach(pair => {
+                const keyInput = pair.querySelector('.key-input');
+                const valueInput = pair.querySelector('.value-input');
+                const typeSelector = pair.querySelector('.type-selector');
+                
+                if (keyInput && keyInput.value.trim()) {
+                    const key = keyInput.value.trim();
+                    let value = valueInput.value;
+                    
+                    // 根据类型处理值
+                    if (typeSelector) {
+                        switch(typeSelector.value) {
+                            case 'number':
+                                value = parseFloat(value) || 0;
+                                break;
+                            case 'boolean':
+                                value = valueInput.checked;
+                                break;
+                            case 'array':
+                                value = getArrayValues(pair);
+                                break;
+                            case 'object':
+                                value = getObjectValues(pair);
+                                break;
+                        }
+                    }
+                    
+                    jsonData[key] = value;
+                }
+            });
+            
+            updateStatus();
+        }
+
+        // 获取数组值
+        function getArrayValues(pair) {
+            const arrayContainer = pair.querySelector('.array-container');
+            if (!arrayContainer) return [];
+            
+            const arrayItems = arrayContainer.querySelectorAll('.array-input');
+            return Array.from(arrayItems).map(item => item.value.trim()).filter(item => item);
+        }
+
+        // 获取对象值
+        function getObjectValues(pair) {
+            const nestedContainer = pair.querySelector('.nested-container');
+            if (!nestedContainer) return {};
+            
+            const obj = {};
+            const nestedPairs = nestedContainer.querySelectorAll('.key-value-pair');
+            
+            nestedPairs.forEach(nestedPair => {
+                const keyInput = nestedPair.querySelector('.key-input');
+                const valueInput = nestedPair.querySelector('.value-input');
+                
+                if (keyInput && keyInput.value.trim()) {
+                    obj[keyInput.value.trim()] = valueInput.value;
+                }
+            });
+            
+            return obj;
+        }
+
+        // 上传JSON文件
+        function loadJsonFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    loadJsonData(data);
+                    showNotification('JSON文件加载成功', 'success');
+                } catch (error) {
+                    showNotification('JSON文件格式错误', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 加载JSON数据到编辑器
+        function loadJsonData(data, container = null) {
+            const targetContainer = container || document.getElementById('keyValuePairs');
+            targetContainer.innerHTML = '';
+            pairCounter = 0;
+            
+            Object.entries(data).forEach(([key, value]) => {
+                addKeyValuePairFromData(targetContainer, key, value);
+            });
+            
+            updateJson();
+        }
+
+        // 从数据添加键值对
+        function addKeyValuePairFromData(container, key, value) {
+            const pairId = `pair_${pairCounter++}`;
+            const pairDiv = document.createElement('div');
+            pairDiv.className = 'key-value-pair';
+            pairDiv.id = pairId;
+            
+            let type = 'string';
+            if (typeof value === 'number') type = 'number';
+            else if (typeof value === 'boolean') type = 'boolean';
+            else if (Array.isArray(value)) type = 'array';
+            else if (typeof value === 'object' && value !== null) type = 'object';
+            
+            pairDiv.innerHTML = `
+                <input type="text" class="key-input" value="${key}" onchange="updateJson()">
+                <select class="type-selector" onchange="changeValueType(this)">
+                    <option value="string" ${type === 'string' ? 'selected' : ''}>字符串</option>
+                    <option value="number" ${type === 'number' ? 'selected' : ''}>数字</option>
+                    <option value="boolean" ${type === 'boolean' ? 'selected' : ''}>布尔值</option>
+                    <option value="array" ${type === 'array' ? 'selected' : ''}>数组</option>
+                    <option value="object" ${type === 'object' ? 'selected' : ''}>对象</option>
+                </select>
+                <input type="${type === 'boolean' ? 'checkbox' : type === 'number' ? 'number' : 'text'}" 
+                       class="value-input" 
+                       value="${type === 'boolean' ? '' : value}" 
+                       ${type === 'boolean' ? (value ? 'checked' : '') : ''}
+                       onchange="updateJson()">
+                <div class="pair-controls">
+                    <button class="btn btn-success btn-small" onclick="addNestedPair('${pairId}')" title="添加嵌套键值对">
+                        ➕
+                    </button>
+                    <button class="btn btn-warning btn-small" onclick="addArrayItem('${pairId}')" title="添加数组项">
+                        📋
+                    </button>
+                    <button class="btn btn-danger btn-small" onclick="removePair('${pairId}')" title="删除">
+                        🗑️
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(pairDiv);
+            
+            // 处理数组和对象类型
+            if (type === 'array' && Array.isArray(value)) {
+                addArrayItemsFromData(pairDiv, value);
+            } else if (type === 'object' && typeof value === 'object' && value !== null) {
+                addObjectItemsFromData(pairDiv, value);
+            }
+        }
+
+        // 从数据添加数组项
+        function addArrayItemsFromData(pairDiv, arrayData) {
+            const typeSelector = pairDiv.querySelector('.type-selector');
+            typeSelector.value = 'array';
+            
+            const arrayContainer = document.createElement('div');
+            arrayContainer.className = 'array-container';
+            arrayContainer.style.marginTop = '10px';
+            arrayContainer.style.paddingLeft = '20px';
+            arrayContainer.style.borderLeft = '3px solid #ff9800';
+            
+            arrayData.forEach(item => {
+                const arrayItemDiv = document.createElement('div');
+                arrayItemDiv.className = 'key-value-pair';
+                arrayItemDiv.innerHTML = `
+                    <input type="text" class="array-input" value="${item}" onchange="updateJson()">
+                    <button class="btn btn-danger btn-small" onclick="this.parentElement.remove(); updateJson()">🗑️</button>
+                `;
+                arrayContainer.appendChild(arrayItemDiv);
+            });
+            
+            pairDiv.appendChild(arrayContainer);
+        }
+
+        // 从数据添加对象项
+        function addObjectItemsFromData(pairDiv, objectData) {
+            const typeSelector = pairDiv.querySelector('.type-selector');
+            typeSelector.value = 'object';
+            
+            const nestedContainer = document.createElement('div');
+            nestedContainer.className = 'nested-container';
+            nestedContainer.id = `nested_${pairCounter++}`;
+            
+            Object.entries(objectData).forEach(([key, value]) => {
+                addKeyValuePairFromData(nestedContainer, key, value);
+            });
+            
+            pairDiv.appendChild(nestedContainer);
+        }
+
+        // 生成并下载JSON
+        function generateJson() {
+            updateJson();
+            
+            if (Object.keys(jsonData).length === 0) {
+                showNotification('请先添加一些数据', 'warning');
+                return;
+            }
+            
+            const jsonString = JSON.stringify(jsonData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `generated_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('JSON文件已下载', 'success');
+        }
+
+        // 预览JSON
+        function previewJson() {
+            updateJson();
+            const previewPanel = document.getElementById('previewPanel');
+            const jsonPreview = document.getElementById('jsonPreview');
+            
+            if (Object.keys(jsonData).length === 0) {
+                jsonPreview.textContent = '暂无数据';
+            } else {
+                jsonPreview.textContent = JSON.stringify(jsonData, null, 2);
+            }
+            
+            previewPanel.style.display = 'block';
+        }
+
+        // 显示模板库
+        function showTemplates() {
+            const templates = [
+                {
+                    name: '用户信息',
+                    description: '包含基本用户信息的JSON模板',
+                    data: {
+                        "name": "张三",
+                        "age": 25,
+                        "email": "zhangsan@example.com",
+                        "address": {
+                            "city": "北京",
+                            "street": "朝阳区"
+                        },
+                        "hobbies": ["读书", "游泳", "编程"]
+                    }
+                },
+                {
+                    name: '产品信息',
+                    description: '电商产品信息模板',
+                    data: {
+                        "productId": "P001",
+                        "name": "智能手机",
+                        "price": 2999.99,
+                        "category": "电子产品",
+                        "specifications": {
+                            "brand": "Apple",
+                            "model": "iPhone 15",
+                            "storage": "128GB"
+                        },
+                        "tags": ["新品", "热销", "推荐"]
+                    }
+                },
+                {
+                    name: '配置信息',
+                    description: '应用程序配置模板',
+                    data: {
+                        "appName": "MyApp",
+                        "version": "1.0.0",
+                        "debug": false,
+                        "database": {
+                            "host": "localhost",
+                            "port": 5432,
+                            "name": "myapp_db"
+                        },
+                        "features": {
+                            "darkMode": true,
+                            "notifications": true,
+                            "autoSave": false
+                        }
+                    }
+                }
+            ];
+            
+            const templateList = document.getElementById('templateList');
+            templateList.innerHTML = '';
+            
+            templates.forEach(template => {
+                const templateItem = document.createElement('div');
+                templateItem.className = 'template-item';
+                templateItem.onclick = () => loadTemplate(template.data);
+                templateItem.innerHTML = `
+                    <h4>${template.name}</h4>
+                    <p>${template.description}</p>
+                `;
+                templateList.appendChild(templateItem);
+            });
+            
+            document.getElementById('templateModal').style.display = 'block';
+        }
+
+        // 加载模板
+        function loadTemplate(data) {
+            if (confirm('确定要加载此模板吗？这将覆盖当前数据。')) {
+                loadJsonData(data);
+                closeModal();
+                showNotification('模板加载成功', 'success');
+            }
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('templateModal').style.display = 'none';
+        }
+
+        // 清空所有
+        function clearAll() {
+            if (confirm('确定要清空所有数据吗？此操作不可撤销。')) {
+                jsonData = {};
+                document.getElementById('keyValuePairs').innerHTML = '';
+                pairCounter = 0;
+                addKeyValuePair();
+                updateStatus();
+                showNotification('所有数据已清空', 'success');
+            }
+        }
+
+        // 更新状态
+        function updateStatus() {
+            const pairs = document.querySelectorAll('.key-value-pair');
+            const pairCount = pairs.length;
+            const maxLevel = Math.max(...Array.from(pairs).map(pair => getNestLevel(pair)));
+            
+            document.getElementById('pairCount').textContent = pairCount;
+            document.getElementById('nestLevel').textContent = maxLevel;
+            
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            if (pairCount === 0) {
+                statusIndicator.className = 'status-indicator warning';
+                statusText.textContent = '无数据';
+            } else if (Object.keys(jsonData).length > 0) {
+                statusIndicator.className = 'status-indicator';
+                statusText.textContent = '数据有效';
+            } else {
+                statusIndicator.className = 'status-indicator error';
+                statusText.textContent = '数据无效';
+            }
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('templateModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 'n':
+                        event.preventDefault();
+                        newJson();
+                        break;
+                    case 's':
+                        event.preventDefault();
+                        generateJson();
+                        break;
+                    case 'p':
+                        event.preventDefault();
+                        previewJson();
+                        break;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
