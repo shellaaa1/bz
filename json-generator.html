@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON数据生成工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .toolbar {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .editor-panel {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .preview-panel {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .json-editor {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .json-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .json-item.object {
+            border-left: 4px solid #007bff;
+            background: #e3f2fd;
+        }
+
+        .json-item.array {
+            border-left: 4px solid #28a745;
+            background: #e8f5e8;
+        }
+
+        .json-item.nested {
+            margin-left: 20px;
+            border-left: 3px solid #ffc107;
+            background: #fff3cd;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .control-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn.add {
+            background: #28a745;
+            color: white;
+        }
+
+        .control-btn.delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .control-btn.toggle {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .key-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            font-weight: 500;
+            background: #e3f2fd;
+        }
+
+        .value-input {
+            flex: 2;
+            padding: 8px 12px;
+            border: 2px solid #28a745;
+            border-radius: 6px;
+            background: #e8f5e8;
+        }
+
+        .type-select {
+            padding: 8px;
+            border: 2px solid #ffc107;
+            border-radius: 6px;
+            background: #fff3cd;
+        }
+
+        .nested-container {
+            margin-left: 20px;
+            margin-top: 10px;
+            border-left: 2px dashed #ccc;
+            padding-left: 15px;
+        }
+
+        .collapsed {
+            display: none;
+        }
+
+        .preview-json {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #4a5568;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .drag-over {
+            background: #fff3cd !important;
+            border: 2px dashed #ffc107 !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success-message {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .stats {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .editor-panel {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 JSON数据生成工具</h1>
+            <p>专业的JSON编辑器，支持无限嵌套和可视化编辑</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="addRootItem()">
+                ➕ 添加根元素
+            </button>
+            <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
+                📁 上传JSON文件
+            </button>
+            <button class="btn btn-danger" onclick="clearAll()">
+                🗑️ 清空所有
+            </button>
+            <button class="btn btn-secondary" onclick="downloadJSON()">
+                💾 下载JSON
+            </button>
+            <button class="btn btn-secondary" onclick="validateJSON()">
+                ✅ 验证JSON
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-panel">
+                <h3>📝 JSON编辑器</h3>
+                <div id="messageContainer"></div>
+                <div id="statsContainer"></div>
+                <div class="json-editor" id="jsonEditor">
+                    <div class="empty-state" style="text-align: center; color: #6c757d; padding: 40px;">
+                        <h4>🎯 开始创建您的JSON数据</h4>
+                        <p>点击"添加根元素"开始构建您的JSON结构</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <h3>👀 实时预览</h3>
+                <div class="preview-json" id="previewJson">
+{
+  "示例": "这里将显示您的JSON数据预览",
+  "提示": "开始编辑左侧的数据结构"
+}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" class="file-input" accept=".json" onchange="uploadJSON(event)">
+
+    <script>
+        let jsonData = {};
+        let itemCounter = 0;
+
+        // 数据类型定义
+        const DATA_TYPES = {
+            string: '字符串',
+            number: '数字',
+            boolean: '布尔值',
+            null: '空值',
+            object: '对象',
+            array: '数组'
+        };
+
+        // 初始化
+        function init() {
+            updatePreview();
+            updateStats();
+        }
+
+        // 添加根元素
+        function addRootItem() {
+            const editor = document.getElementById('jsonEditor');
+            const emptyState = editor.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const itemId = `item_${itemCounter++}`;
+            const itemElement = createItemElement(itemId, '', 'string', '', 0);
+            editor.appendChild(itemElement);
+            updatePreview();
+            updateStats();
+        }
+
+        // 创建项目元素
+        function createItemElement(id, key, type, value, level) {
+            const div = document.createElement('div');
+            div.className = `json-item ${level > 0 ? 'nested' : ''}`;
+            div.id = id;
+            div.setAttribute('data-level', level);
+
+            const typeClass = type === 'object' ? 'object' : type === 'array' ? 'array' : '';
+            if (typeClass) {
+                div.classList.add(typeClass);
+            }
+
+            div.innerHTML = `
+                <div class="item-header">
+                    <span style="font-weight: bold; color: #6c757d;">层级 ${level}</span>
+                    <div class="item-controls">
+                        ${type === 'object' || type === 'array' ? 
+                            `<button class="control-btn add" onclick="addChild('${id}', '${type}')" title="添加子项">➕</button>
+                             <button class="control-btn toggle" onclick="toggleCollapse('${id}')" title="折叠/展开">🔽</button>` : ''}
+                        <button class="control-btn delete" onclick="deleteItem('${id}')" title="删除项">🗑️</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-row">
+                        <input type="text" class="key-input" placeholder="键名" value="${key}" 
+                               onchange="updateData()" ${level === 0 ? 'required' : ''}>
+                        <select class="type-select" onchange="changeType('${id}', this.value)">
+                            ${Object.entries(DATA_TYPES).map(([k, v]) => 
+                                `<option value="${k}" ${k === type ? 'selected' : ''}>${v}</option>`
+                            ).join('')}
+                        </select>
+                        ${type !== 'object' && type !== 'array' ? 
+                            `<input type="${type === 'number' ? 'number' : 'text'}" class="value-input" 
+                                   placeholder="值" value="${value}" onchange="updateData()" 
+                                   ${type === 'boolean' ? 'list="booleanOptions"' : ''}>` : ''}
+                    </div>
+                </div>
+                <div class="nested-container" id="nested_${id}"></div>
+            `;
+
+            return div;
+        }
+
+        // 添加子项
+        function addChild(parentId, parentType) {
+            const parentElement = document.getElementById(parentId);
+            const nestedContainer = document.getElementById(`nested_${parentId}`);
+            const parentLevel = parseInt(parentElement.getAttribute('data-level'));
+            
+            const childId = `item_${itemCounter++}`;
+            const childElement = createItemElement(childId, '', 'string', '', parentLevel + 1);
+            
+            nestedContainer.appendChild(childElement);
+            updatePreview();
+            updateStats();
+        }
+
+        // 删除项目
+        function deleteItem(id) {
+            if (confirm('确定要删除这个项目及其所有子项吗？')) {
+                const element = document.getElementById(id);
+                element.remove();
+                updatePreview();
+                updateStats();
+                
+                // 如果删除后编辑器为空，显示空状态
+                const editor = document.getElementById('jsonEditor');
+                if (editor.children.length === 0) {
+                    editor.innerHTML = `
+                        <div class="empty-state" style="text-align: center; color: #6c757d; padding: 40px;">
+                            <h4>🎯 开始创建您的JSON数据</h4>
+                            <p>点击"添加根元素"开始构建您的JSON结构</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // 切换折叠状态
+        function toggleCollapse(id) {
+            const nestedContainer = document.getElementById(`nested_${id}`);
+            const toggleBtn = document.querySelector(`#${id} .control-btn.toggle`);
+            
+            if (nestedContainer.classList.contains('collapsed')) {
+                nestedContainer.classList.remove('collapsed');
+                toggleBtn.textContent = '🔽';
+            } else {
+                nestedContainer.classList.add('collapsed');
+                toggleBtn.textContent = '▶️';
+            }
+        }
+
+        // 改变数据类型
+        function changeType(id, newType) {
+            const element = document.getElementById(id);
+            const inputGroup = element.querySelector('.input-group');
+            const keyInput = element.querySelector('.key-input');
+            const currentKey = keyInput.value;
+            
+            // 重新创建输入行
+            const inputRow = inputGroup.querySelector('.input-row');
+            const newInputRow = document.createElement('div');
+            newInputRow.className = 'input-row';
+            
+            let valueInput = '';
+            if (newType !== 'object' && newType !== 'array') {
+                const inputType = newType === 'number' ? 'number' : 'text';
+                valueInput = `<input type="${inputType}" class="value-input" 
+                                   placeholder="值" value="" onchange="updateData()" 
+                                   ${newType === 'boolean' ? 'list="booleanOptions"' : ''}>`;
+            }
+            
+            newInputRow.innerHTML = `
+                <input type="text" class="key-input" placeholder="键名" value="${currentKey}" 
+                       onchange="updateData()" required>
+                <select class="type-select" onchange="changeType('${id}', this.value)">
+                    ${Object.entries(DATA_TYPES).map(([k, v]) => 
+                        `<option value="${k}" ${k === newType ? 'selected' : ''}>${v}</option>`
+                    ).join('')}
+                </select>
+                ${valueInput}
+            `;
+            
+            inputRow.replaceWith(newInputRow);
+            
+            // 更新样式类
+            element.className = `json-item ${element.classList.contains('nested') ? 'nested' : ''}`;
+            if (newType === 'object') {
+                element.classList.add('object');
+            } else if (newType === 'array') {
+                element.classList.add('array');
+            }
+            
+            // 更新控制按钮
+            const controls = element.querySelector('.item-controls');
+            const addBtn = controls.querySelector('.add');
+            const toggleBtn = controls.querySelector('.toggle');
+            
+            if (newType === 'object' || newType === 'array') {
+                if (!addBtn) {
+                    const newAddBtn = document.createElement('button');
+                    newAddBtn.className = 'control-btn add';
+                    newAddBtn.onclick = () => addChild(id, newType);
+                    newAddBtn.title = '添加子项';
+                    newAddBtn.textContent = '➕';
+                    controls.insertBefore(newAddBtn, controls.lastElementChild);
+                }
+                if (!toggleBtn) {
+                    const newToggleBtn = document.createElement('button');
+                    newToggleBtn.className = 'control-btn toggle';
+                    newToggleBtn.onclick = () => toggleCollapse(id);
+                    newToggleBtn.title = '折叠/展开';
+                    newToggleBtn.textContent = '🔽';
+                    controls.insertBefore(newToggleBtn, controls.lastElementChild);
+                }
+            } else {
+                if (addBtn) addBtn.remove();
+                if (toggleBtn) toggleBtn.remove();
+            }
+            
+            updatePreview();
+            updateStats();
+        }
+
+        // 更新数据
+        function updateData() {
+            setTimeout(() => {
+                updatePreview();
+                updateStats();
+            }, 100);
+        }
+
+        // 更新预览
+        function updatePreview() {
+            try {
+                const data = buildJSONFromEditor();
+                const preview = document.getElementById('previewJson');
+                preview.textContent = JSON.stringify(data, null, 2);
+                clearMessage();
+            } catch (error) {
+                showMessage('JSON构建错误: ' + error.message, 'error');
+            }
+        }
+
+        // 从编辑器构建JSON
+        function buildJSONFromEditor() {
+            const editor = document.getElementById('jsonEditor');
+            const rootItems = Array.from(editor.children).filter(child => 
+                child.classList.contains('json-item') && !child.classList.contains('nested')
+            );
+            
+            if (rootItems.length === 0) {
+                return {};
+            }
+            
+            const result = {};
+            rootItems.forEach(item => {
+                const data = buildItemData(item);
+                if (data.key && data.key.trim() !== '') {
+                    result[data.key] = data.value;
+                }
+            });
+            
+            return result;
+        }
+
+        // 构建项目数据
+        function buildItemData(itemElement) {
+            const keyInput = itemElement.querySelector('.key-input');
+            const valueInput = itemElement.querySelector('.value-input');
+            const typeSelect = itemElement.querySelector('.type-select');
+            const nestedContainer = itemElement.querySelector('.nested-container');
+            
+            const key = keyInput ? keyInput.value.trim() : '';
+            const type = typeSelect ? typeSelect.value : 'string';
+            
+            let value;
+            
+            switch (type) {
+                case 'string':
+                    value = valueInput ? valueInput.value : '';
+                    break;
+                case 'number':
+                    value = valueInput ? parseFloat(valueInput.value) || 0 : 0;
+                    break;
+                case 'boolean':
+                    value = valueInput ? valueInput.value === 'true' : false;
+                    break;
+                case 'null':
+                    value = null;
+                    break;
+                case 'object':
+                    value = {};
+                    const objectChildren = nestedContainer.children;
+                    for (let child of objectChildren) {
+                        const childData = buildItemData(child);
+                        if (childData.key && childData.key.trim() !== '') {
+                            value[childData.key] = childData.value;
+                        }
+                    }
+                    break;
+                case 'array':
+                    value = [];
+                    const arrayChildren = nestedContainer.children;
+                    for (let child of arrayChildren) {
+                        const childData = buildItemData(child);
+                        value.push(childData.value);
+                    }
+                    break;
+                default:
+                    value = valueInput ? valueInput.value : '';
+            }
+            
+            return { key, value, type };
+        }
+
+        // 上传JSON文件
+        function uploadJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    loadJSONToEditor(jsonData);
+                    showMessage('JSON文件上传成功！', 'success');
+                } catch (error) {
+                    showMessage('JSON文件格式错误: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 加载JSON到编辑器
+        function loadJSONToEditor(data) {
+            const editor = document.getElementById('jsonEditor');
+            editor.innerHTML = '';
+            
+            if (typeof data === 'object' && data !== null) {
+                Object.entries(data).forEach(([key, value]) => {
+                    const itemId = `item_${itemCounter++}`;
+                    const itemElement = createItemFromData(itemId, key, value, 0);
+                    editor.appendChild(itemElement);
+                });
+            }
+            
+            updatePreview();
+            updateStats();
+        }
+
+        // 从数据创建项目
+        function createItemFromData(id, key, value, level) {
+            let type = 'string';
+            let displayValue = '';
+            
+            if (value === null) {
+                type = 'null';
+            } else if (typeof value === 'boolean') {
+                type = 'boolean';
+                displayValue = value.toString();
+            } else if (typeof value === 'number') {
+                type = 'number';
+                displayValue = value.toString();
+            } else if (Array.isArray(value)) {
+                type = 'array';
+            } else if (typeof value === 'object') {
+                type = 'object';
+            } else {
+                type = 'string';
+                displayValue = value.toString();
+            }
+            
+            const itemElement = createItemElement(id, key, type, displayValue, level);
+            
+            // 如果是对象或数组，递归创建子项
+            if (type === 'object' && value) {
+                const nestedContainer = itemElement.querySelector('.nested-container');
+                Object.entries(value).forEach(([childKey, childValue]) => {
+                    const childId = `item_${itemCounter++}`;
+                    const childElement = createItemFromData(childId, childKey, childValue, level + 1);
+                    nestedContainer.appendChild(childElement);
+                });
+            } else if (type === 'array' && value) {
+                const nestedContainer = itemElement.querySelector('.nested-container');
+                value.forEach((childValue, index) => {
+                    const childId = `item_${itemCounter++}`;
+                    const childElement = createItemFromData(childId, '', childValue, level + 1);
+                    nestedContainer.appendChild(childElement);
+                });
+            }
+            
+            return itemElement;
+        }
+
+        // 下载JSON
+        function downloadJSON() {
+            try {
+                const data = buildJSONFromEditor();
+                const jsonString = JSON.stringify(data, null, 2);
+                
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `json-data-${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                URL.revokeObjectURL(url);
+                showMessage('JSON文件下载成功！', 'success');
+            } catch (error) {
+                showMessage('下载失败: ' + error.message, 'error');
+            }
+        }
+
+        // 验证JSON
+        function validateJSON() {
+            try {
+                const data = buildJSONFromEditor();
+                const jsonString = JSON.stringify(data, null, 2);
+                JSON.parse(jsonString); // 验证是否为有效JSON
+                showMessage('JSON格式验证通过！✅', 'success');
+            } catch (error) {
+                showMessage('JSON格式验证失败: ' + error.message, 'error');
+            }
+        }
+
+        // 清空所有
+        function clearAll() {
+            if (confirm('确定要清空所有数据吗？此操作不可撤销！')) {
+                const editor = document.getElementById('jsonEditor');
+                editor.innerHTML = `
+                    <div class="empty-state" style="text-align: center; color: #6c757d; padding: 40px;">
+                        <h4>🎯 开始创建您的JSON数据</h4>
+                        <p>点击"添加根元素"开始构建您的JSON结构</p>
+                    </div>
+                `;
+                updatePreview();
+                updateStats();
+                showMessage('所有数据已清空', 'success');
+            }
+        }
+
+        // 显示消息
+        function showMessage(message, type) {
+            const container = document.getElementById('messageContainer');
+            const messageClass = type === 'error' ? 'error-message' : 'success-message';
+            container.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        // 清除消息
+        function clearMessage() {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = '';
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            const editor = document.getElementById('jsonEditor');
+            const items = editor.querySelectorAll('.json-item');
+            const objects = editor.querySelectorAll('.json-item.object');
+            const arrays = editor.querySelectorAll('.json-item.array');
+            
+            const statsContainer = document.getElementById('statsContainer');
+            if (items.length > 0) {
+                statsContainer.innerHTML = `
+                    <div class="stats">
+                        📊 统计信息: 总项目 ${items.length} | 对象 ${objects.length} | 数组 ${arrays.length} | 最大嵌套层级 ${getMaxNestingLevel()}
+                    </div>
+                `;
+            } else {
+                statsContainer.innerHTML = '';
+            }
+        }
+
+        // 获取最大嵌套层级
+        function getMaxNestingLevel() {
+            const editor = document.getElementById('jsonEditor');
+            const items = editor.querySelectorAll('.json-item');
+            let maxLevel = 0;
+            
+            items.forEach(item => {
+                const level = parseInt(item.getAttribute('data-level'));
+                if (level > maxLevel) {
+                    maxLevel = level;
+                }
+            });
+            
+            return maxLevel;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+
+        // 添加布尔值选项
+        const datalist = document.createElement('datalist');
+        datalist.id = 'booleanOptions';
+        datalist.innerHTML = '<option value="true"><option value="false">';
+        document.body.appendChild(datalist);
+    </script>
+</body>
+</html>
