@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON 数据生成工具</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .toolbar {
+            margin-bottom: 10px;
+        }
+
+        .toolbar button,
+        .toolbar input[type="file"] {
+            margin-right: 6px;
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        #editor {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            min-height: 60px;
+        }
+
+        /* ====== Key-Value Pair ====== */
+        .kv-pair {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 6px;
+        }
+
+        .kv-pair input.key {
+            width: 140px;
+            background: #e0f7fa;
+            border: 1px solid #b2ebf2;
+            padding: 4px 6px;
+        }
+
+        .kv-pair input.value {
+            flex: 1;
+            background: #fffde7;
+            border: 1px solid #fff9c4;
+            padding: 4px 6px;
+        }
+
+        .kv-pair select.type {
+            padding: 4px 6px;
+        }
+
+        .kv-pair .buttons button {
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        /* ====== Object Container ====== */
+        .kv-container {
+            margin-left: 22px;
+            border-left: 3px dashed #ccc;
+            padding-left: 10px;
+        }
+
+        /* ====== Array Container ====== */
+        .array-container {
+            margin-left: 22px;
+            border-left: 3px dotted #ffb74d;
+            padding-left: 10px;
+            background: #fff3e0;
+        }
+
+        .array-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .array-item input.value {
+            flex: 1;
+            background: #ffe0b2;
+            border: 1px solid #ffcc80;
+            padding: 4px 6px;
+        }
+
+        /* ====== JSON Output ====== */
+        pre#json-output {
+            white-space: pre-wrap;
+            background: #eceff1;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 320px;
+            overflow: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>JSON 数据生成工具</h2>
+    <div class="toolbar">
+        <button id="btn-new">新建</button>
+        <input type="file" id="file-input" accept=".json">
+        <button id="btn-add">新增键值</button>
+        <button id="btn-generate">生成 JSON</button>
+        <button id="btn-download" disabled>下载 JSON</button>
+    </div>
+
+    <div id="editor"></div>
+
+    <h3>生成结果</h3>
+    <pre id="json-output"></pre>
+
+    <script>
+        const editor = document.getElementById("editor");
+        const outputPre = document.getElementById("json-output");
+        const btnDownload = document.getElementById("btn-download");
+
+        /* ------------- 创建键值对元素 ------------- */
+        function createPair(key = "", value = "", presetType = null) {
+            const pair = document.createElement("div");
+            pair.className = "kv-pair";
+
+            // key
+            const keyInput = document.createElement("input");
+            keyInput.className = "key";
+            keyInput.placeholder = "键";
+            keyInput.value = key;
+
+            // type selector
+            const typeSelect = document.createElement("select");
+            typeSelect.className = "type";
+            ["string", "number", "boolean", "null", "object", "array"].forEach(t => {
+                const op = document.createElement("option");
+                op.value = t;
+                op.textContent = t;
+                typeSelect.appendChild(op);
+            });
+
+            // value input (for primitive types)
+            const valueInput = document.createElement("input");
+            valueInput.className = "value";
+            valueInput.placeholder = "值";
+            valueInput.value = value;
+
+            // buttons wrapper
+            const btnWrap = document.createElement("div");
+            btnWrap.className = "buttons";
+
+            // 删除当前键值对
+            const btnRemove = document.createElement("button");
+            btnRemove.textContent = "删除";
+            btnRemove.onclick = () => pair.remove();
+
+            // 转为对象子级
+            const btnToObject = document.createElement("button");
+            btnToObject.textContent = "对象";
+            btnToObject.title = "将此值转换为对象，可继续添加子级";
+            btnToObject.onclick = () => {
+                typeSelect.value = "object";
+                updateTypeUI();
+            };
+
+            // 转为数组子级
+            const btnToArray = document.createElement("button");
+            btnToArray.textContent = "数组";
+            btnToArray.title = "将此值转换为数组，可继续添加项";
+            btnToArray.onclick = () => {
+                typeSelect.value = "array";
+                updateTypeUI();
+            };
+
+            btnWrap.append(btnToObject, btnToArray, btnRemove);
+
+            pair.append(keyInput, typeSelect, valueInput, btnWrap);
+
+            /* ---- 对象子容器 ---- */
+            const objContainer = document.createElement("div");
+            objContainer.className = "kv-container hidden";
+            // 为对象容器添加“新增键值”按钮
+            const btnAddKv = document.createElement("button");
+            btnAddKv.textContent = "新增键值";
+            btnAddKv.onclick = () => objContainer.appendChild(createPair());
+            objContainer.appendChild(btnAddKv);
+            pair.appendChild(objContainer);
+
+            /* ---- 数组子容器 ---- */
+            const arrayContainer = document.createElement("div");
+            arrayContainer.className = "array-container hidden";
+            const btnAddItem = document.createElement("button");
+            btnAddItem.textContent = "新增项";
+            btnAddItem.onclick = () => {
+                const item = document.createElement("div");
+                item.className = "array-item";
+                const itemInput = document.createElement("input");
+                itemInput.className = "value";
+                itemInput.placeholder = "数组项";
+                const rmItemBtn = document.createElement("button");
+                rmItemBtn.textContent = "删除";
+                rmItemBtn.onclick = () => item.remove();
+                item.append(itemInput, rmItemBtn);
+                arrayContainer.insertBefore(item, btnAddItem);
+            };
+            arrayContainer.appendChild(btnAddItem);
+            pair.appendChild(arrayContainer);
+
+            // 根据选中的类型切换 UI
+            function updateTypeUI() {
+                const t = typeSelect.value;
+                if (t === "object") {
+                    valueInput.classList.add("hidden");
+                    arrayContainer.classList.add("hidden");
+                    objContainer.classList.remove("hidden");
+                } else if (t === "array") {
+                    valueInput.classList.add("hidden");
+                    objContainer.classList.add("hidden");
+                    arrayContainer.classList.remove("hidden");
+                } else {
+                    objContainer.classList.add("hidden");
+                    arrayContainer.classList.add("hidden");
+                    valueInput.classList.remove("hidden");
+                }
+            }
+            typeSelect.addEventListener("change", updateTypeUI);
+
+            // apply preset type if given
+            if (presetType) {
+                typeSelect.value = presetType;
+            }
+            updateTypeUI();
+
+            return pair;
+        }
+
+        /* ------------- 解析 UI → JSON ------------- */
+        function buildPrimitive(type, str) {
+            switch (type) {
+                case "number":
+                    return Number(str);
+                case "boolean":
+                    return str.toLowerCase() === "true";
+                case "null":
+                    return null;
+                default:
+                    return str; // string
+            }
+        }
+
+        function buildArray(container) {
+            const items = Array.from(container.querySelectorAll(":scope > .array-item"));
+            return items.map(it => it.querySelector("input.value").value);
+        }
+
+        function buildObject(container) {
+            const obj = {};
+            Array.from(container.children).forEach(child => {
+                if (!child.classList.contains("kv-pair")) return; // 跳过按钮
+                const key = child.querySelector("input.key").value;
+                if (!key) return; // 忽略空键
+                const type = child.querySelector("select.type").value;
+                if (type === "object") {
+                    const subContainer = child.querySelector(".kv-container");
+                    obj[key] = buildObject(subContainer);
+                } else if (type === "array") {
+                    const arrCon = child.querySelector(".array-container");
+                    obj[key] = buildArray(arrCon);
+                } else {
+                    const valStr = child.querySelector("input.value").value;
+                    obj[key] = buildPrimitive(type, valStr);
+                }
+            });
+            return obj;
+        }
+
+        /* ------------- JSON → UI ------------- */
+        function populateObject(obj, container) {
+            Object.entries(obj).forEach(([k, v]) => {
+                let type = typeof v;
+                if (v === null) type = "null";
+                if (Array.isArray(v)) type = "array";
+                if (type === "object" && !Array.isArray(v) && v !== null) type = "object";
+
+                const pair = createPair(k, (type === "string" || type === "number" || type === "boolean" || type === "null") ? String(v) : "", type);
+                container.appendChild(pair);
+
+                if (type === "object") {
+                    const subCon = pair.querySelector(".kv-container");
+                    populateObject(v, subCon);
+                } else if (type === "array") {
+                    const arrCon = pair.querySelector(".array-container");
+                    v.forEach(itemVal => {
+                        const addBtn = arrCon.querySelector("button");
+                        addBtn.click();
+                        const lastItem = arrCon.querySelectorAll(".array-item");
+                        lastItem[lastItem.length - 1].querySelector("input.value").value = itemVal;
+                    });
+                }
+            });
+        }
+
+        /* ------------- 事件绑定 ------------- */
+        document.getElementById("btn-new").onclick = () => {
+            editor.innerHTML = "";
+            outputPre.textContent = "";
+            btnDownload.disabled = true;
+        };
+
+        document.getElementById("btn-add").onclick = () => editor.appendChild(createPair());
+
+        document.getElementById("btn-generate").onclick = () => {
+            const result = buildObject(editor);
+            const jsonStr = JSON.stringify(result, null, 2);
+            outputPre.textContent = jsonStr;
+            // 生成下载链接
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            btnDownload.onclick = () => {
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "data.json";
+                a.click();
+            };
+            btnDownload.disabled = false;
+        };
+
+        document.getElementById("file-input").onchange = e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const data = JSON.parse(reader.result);
+                    document.getElementById("btn-new").click();
+                    populateObject(data, editor);
+                } catch (err) {
+                    alert("JSON 解析失败: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+    </script>
+</body>
+</html>
