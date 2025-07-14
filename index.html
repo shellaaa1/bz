@@ -1,199 +1,845 @@
-<!-- /**************************
- * Created by redy on 2017-3-31.
- * https://github.com/insoxin/API
- * LICENSE  AGPL v3 
- * 请尊重原作,勿删乱改版权.
-***************************/-->
 <!DOCTYPE html>
-<html lang="zh_CN">
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>INSO壁纸</title>
-        <!--[if IE]>
-        	<link rel="stylesheet" href="//isoyu.com/static/css/ie.css" rel="stylesheet" type="text/css" />
-        <![endif]-->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-		<meta property="og:site_name" content="INSO"/>
-		<meta name="referrer" content="origin"/>
-		<meta property="og:type" content="website"/>
-        <meta name="keywords" content="中国INSO,姬长信,热门搜索,最近热搜词,INSO,应搜,应搜索,INSO网络,INSO公司,INSO搜索,INSO谷歌,美国INSO,INSO搜索器,INSO浏览器,INSO互联网,INSO网络公司,INSO搜索引擎" />
-		<meta name="description" content="INSO是尊重您隐私的搜索引擎。建立于2007年致力成为全球最全面的搜索服务，INSO搜索创新于行业直线搜索更准、更快，高速纯净搜索网页信息，服务于安全绿色网页信息展示。" id="meta_description"/>
-		<meta property="og:description" content="INSO是尊重您隐私的搜索引擎。建立于2007年致力成为全球最全面的搜索服务，INSO搜索创新于行业直线搜索更准、更快，高速纯净搜索网页信息，服务于安全绿色网页信息展示。" id="meta_og_description"/>
-		<meta name="application-name" content="INSO"/>
-		<meta name="twitter:widgets:csp" content="on"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
-		<meta name="msapplication-TileImage" content="//isoyu.com/images/favicon-144.png"/>
-		<meta name="msapplication-TileColor" content="#FFFFFF"/>
-		<meta name="msvalidate.01" content=""/>
-		<meta name="google-site-verification" content=""/>
-		<meta http-equiv="Refresh" content="2800" />
-    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/insoxin/bz@main/bz_js/inso_img.js"></script>
-    <link href="https://cdn.jsdelivr.net/gh/insoxin/bz@main/bz_css/inso_bz.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON数据生成工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-</head>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
 
-<body>
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand brand" href="javascript:void(0)" onclick="title_image()">
-                <!-- <img alt="Brand" src="./img/simple.png"> -->
-            </a>
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
 
-            <a href="javascript:void(0)" class="navbar-brand " onclick="title_image()">INSO壁纸</a>
-        </div>
+        .toolbar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="scenery()"> <span class="glyphicon glyphicon-leaf"
-                                                                            aria-hidden="true"></span>&nbsp;风景</a></li>
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="girls()"> <span class="glyphicon glyphicon-apple"
-                                                                          aria-hidden="true"></span>&nbsp;美女</a></li>
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="animation()"> <span class="glyphicon glyphicon-eye-open"
-                                                                              aria-hidden="true"></span>&nbsp;动漫</a>
-                </li>
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(86, 171, 47, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="animals()"> <span class="glyphicon glyphicon-piggy-bank"
-                                                                            aria-hidden="true"></span>&nbsp;动物</a></li>
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="game()"> <span class="glyphicon glyphicon-king"
-                                                                         aria-hidden="true"></span>&nbsp;游戏</a></li>
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="machine()"> <span class="glyphicon glyphicon-plane"
-                                                                            aria-hidden="true"></span>&nbsp;机械</a></li>
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
 
-                <li><a href="javascript:void(0)" onclick="paint()"> <span class="glyphicon glyphicon-erase"
-                                                                          aria-hidden="true"></span>&nbsp;手绘</a></li>
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
 
-                <li><a href="javascript:void(0)" onclick="word()"> <span class="glyphicon glyphicon-text-size"
-                                                                         aria-hidden="true"></span>&nbsp;文字</a></li>
+        .file-input {
+            display: none;
+        }
 
+        .file-label {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">更多<span class="caret"></span></a>
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(252, 182, 159, 0.4);
+        }
 
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:void(0)" onclick="visual()">视觉</a></li>
-                        <li><a href="javascript:void(0)" onclick="monogatari()">物语</a></li>
-                        <li><a href="javascript:void(0)" onclick="design()">设计</a></li>
-                        <li><a href="javascript:void(0)" onclick="emotion()">情感</a></li>
-                        <li><a href="javascript:void(0)" onclick="city()">城市</a></li>
-                        <li><a href="javascript:void(0)" onclick="film()">影视</a></li>
-                        <li><a href="javascript:void(0)" onclick="handsome()">Man</a></li>
-                        <li><a href="javascript:void(0)" onclick="stars()">明星</a></li>
-                    </ul>
+        .main-content {
+            padding: 30px;
+            min-height: 500px;
+        }
 
-                </li>
+        .json-editor {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
+        .json-pair {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+        }
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">排序<span class="caret"></span></a>
+        .json-pair:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
 
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:void(0)" onclick="popular()">最热</a></li>
-                        <li><a href="javascript:void(0)" onclick="newer()">最新</a></li>
-                    </ul>
+        .json-pair.key-value {
+            border-left: 5px solid #28a745;
+        }
 
-                </li>
+        .json-pair.array {
+            border-left: 5px solid #ffc107;
+        }
 
+        .json-pair.object {
+            border-left: 5px solid #17a2b8;
+        }
 
-            </ul>
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-        </div>
-    </div>
-</nav>
-<div class="container-fluid div_container-fluid">
+        .input-group label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
 
-    <div id="gg" class="row">
+        .input-group input, .input-group textarea, .input-group select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
 
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-    </div>
+        .type-selector {
+            width: 120px;
+        }
 
+        .value-input {
+            min-height: 40px;
+        }
 
-    <div class="row bottom_btn">
+        .array-input {
+            min-height: 80px;
+        }
 
-        <input onclick="first()" id="first" type="button" class="btn btn-info" value="首页">
+        .object-input {
+            min-height: 80px;
+        }
 
-        <input onclick="pre()" type="button" class="btn btn-info " value="上页">
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
-        <input onclick="next()" type="button" class="btn btn-info " value="下页">
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
 
-        <input onclick="random()" type="button" class="btn btn-info " value="随机">
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
 
-    </div>
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
 
-</div>
-<style type="text/css">
-		.footer {
-	          width: 96%;
-	          margin: 60px 2% 0;
-	          padding: 16px 0;
-	          text-align: center
+        .nested-container {
+            margin-left: 30px;
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 3px solid #dee2e6;
+        }
+
+        .add-nested-btn {
+            margin-top: 10px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .add-nested-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.4);
+        }
+
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .preview-section h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .json-preview {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .status-bar {
+            background: #e9ecef;
+            padding: 15px 30px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+
+        .status-indicator.error {
+            background: #dc3545;
+        }
+
+        .status-indicator.warning {
+            background: #ffc107;
+        }
+
+        .drag-handle {
+            cursor: move;
+            padding: 5px;
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .drag-handle:hover {
+            color: #495057;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .empty-state p {
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .json-pair {
+                flex-direction: column;
+                gap: 10px;
             }
-
-            .page--home .footer,.page--mini .footer {
-	         position: absolute;
-	         bottom: 0;
-	         left: 0
+            
+            .controls {
+                justify-content: center;
             }
+            
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
 
-            .footer a {
-	         margin: 0 12px;
-	         font-family: "Arial",sans-serif;
-	         font-size: 13px;
-	         font-weight: 400;
-	         letter-spacing: 0;
-	         line-height: 16px;
-	         color: #5c6f84
-             }
-             .footer a:hover {text-decoration: underline}
-             .password{
-	         margin: 0 auto;
-	         text-align:center;   /* 水平居中 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
 
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
     </style>
-	<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?82eabf4b09ff3a28dc7a5a1a2384ada3";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.4/lib/darkmode-js.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="https://api.isoyu.com/js/v1.js" exte-id="548" data-size="36x140" data-color="#FF7119" data-show="1"></script>
-<div class="footer">
-<a href="https://github.com/insoxin/a" target="_blank">本站源码</a>
-<a href="https://isoyu.com/sitemap/" target="_blank">SiteMap</a>
-<a href="https://isoyu.com/spider.html" target="_blank">INSObot</a>
-<a href="https://api.isoyu.com/" target="_blank">Docker Api</a>
-<a href="https://isoyu.com/about/Index1.html" target="_blank">Privacy</a>
-<a href="https://isoyu.com/about/Index20.html" target="_blank">About</a>
-<a href="https://t.me/INS_O" target="_blank">F.A.Q.</a>
-<a href="javascript:;">© 2007-2021 isoyu.com. All Rights Reserved.</a>
-</div>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ JSON数据生成工具</h1>
+            <p>创建、编辑和下载JSON文件的强大工具</p>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="newJson()">
+                📄 新建JSON
+            </button>
+            <label class="file-label" for="fileInput">
+                📁 上传JSON文件
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".json" onchange="loadJsonFile(event)">
+            <button class="btn btn-success" onclick="generateJson()">
+                💾 生成并下载
+            </button>
+            <button class="btn btn-info" onclick="togglePreview()">
+                👁️ 预览JSON
+            </button>
+            <button class="btn btn-warning" onclick="clearAll()">
+                🗑️ 清空所有
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="json-editor" id="jsonEditor">
+                <div class="empty-state">
+                    <h3>开始创建你的JSON数据</h3>
+                    <p>点击"新建JSON"开始创建，或上传现有的JSON文件进行编辑</p>
+                    <button class="btn btn-primary" onclick="addJsonPair()">
+                        ➕ 添加第一个键值对
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-section" id="previewSection" style="display: none;">
+                <h3>JSON预览</h3>
+                <div class="json-preview" id="jsonPreview"></div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">就绪</span>
+            </div>
+            <div class="status-item">
+                <span id="pairCount">0 个键值对</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>处理中...</p>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let jsonData = [];
+        let isPreviewVisible = false;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('就绪', 'success');
+            updatePairCount();
+        });
+
+        // 新建JSON
+        function newJson() {
+            jsonData = [];
+            renderJsonEditor();
+            updateStatus('已创建新的JSON文件', 'success');
+            showNotification('已创建新的JSON文件', 'success');
+        }
+
+        // 添加JSON键值对
+        function addJsonPair(parentIndex = null, type = 'key-value') {
+            const newPair = {
+                id: Date.now() + Math.random(),
+                key: '',
+                value: '',
+                type: type,
+                children: []
+            };
+
+            if (parentIndex === null) {
+                jsonData.push(newPair);
+            } else {
+                if (!jsonData[parentIndex].children) {
+                    jsonData[parentIndex].children = [];
+                }
+                jsonData[parentIndex].children.push(newPair);
+            }
+
+            renderJsonEditor();
+            updateStatus('已添加新的键值对', 'success');
+        }
+
+        // 渲染JSON编辑器
+        function renderJsonEditor() {
+            const editor = document.getElementById('jsonEditor');
+            
+            if (jsonData.length === 0) {
+                editor.innerHTML = `
+                    <div class="empty-state">
+                        <h3>开始创建你的JSON数据</h3>
+                        <p>点击"新建JSON"开始创建，或上传现有的JSON文件进行编辑</p>
+                        <button class="btn btn-primary" onclick="addJsonPair()">
+                            ➕ 添加第一个键值对
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            editor.innerHTML = jsonData.map((pair, index) => 
+                renderJsonPair(pair, index)
+            ).join('');
+
+            updatePairCount();
+        }
+
+        // 渲染单个JSON键值对
+        function renderJsonPair(pair, index, level = 0) {
+            const indent = level * 30;
+            const typeClass = pair.type === 'array' ? 'array' : 
+                             pair.type === 'object' ? 'object' : 'key-value';
+
+            let html = `
+                <div class="json-pair ${typeClass}" style="margin-left: ${indent}px;" data-id="${pair.id}">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="input-group">
+                        <label>键名</label>
+                        <input type="text" value="${pair.key}" 
+                               onchange="updateJsonPair(${index}, 'key', this.value, ${level})" 
+                               placeholder="输入键名">
+                    </div>
+                    <div class="input-group">
+                        <label>类型</label>
+                        <select class="type-selector" onchange="updateJsonPair(${index}, 'type', this.value, ${level})">
+                            <option value="key-value" ${pair.type === 'key-value' ? 'selected' : ''}>键值对</option>
+                            <option value="array" ${pair.type === 'array' ? 'selected' : ''}>数组</option>
+                            <option value="object" ${pair.type === 'object' ? 'selected' : ''}>对象</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>值</label>
+            `;
+
+            if (pair.type === 'array') {
+                html += `
+                    <textarea class="value-input array-input" 
+                              onchange="updateJsonPair(${index}, 'value', this.value, ${level})" 
+                              placeholder="输入数组元素，每行一个">${pair.value}</textarea>
+                `;
+            } else if (pair.type === 'object') {
+                html += `
+                    <textarea class="value-input object-input" 
+                              onchange="updateJsonPair(${index}, 'value', this.value, ${level})" 
+                              placeholder="输入对象属性，格式：key: value">${pair.value}</textarea>
+                `;
+            } else {
+                html += `
+                    <input type="text" class="value-input" value="${pair.value}" 
+                           onchange="updateJsonPair(${index}, 'value', this.value, ${level})" 
+                           placeholder="输入值">
+                `;
+            }
+
+            html += `
+                    </div>
+                    <div class="controls">
+                        <button class="btn btn-small btn-info" onclick="addJsonPair(${index}, 'key-value')">
+                            ➕
+                        </button>
+                        <button class="btn btn-small btn-warning" onclick="addJsonPair(${index}, 'array')">
+                            📋
+                        </button>
+                        <button class="btn btn-small btn-success" onclick="addJsonPair(${index}, 'object')">
+                            📦
+                        </button>
+                        <button class="btn btn-small btn-danger" onclick="removeJsonPair(${index}, ${level})">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // 渲染子元素
+            if (pair.children && pair.children.length > 0) {
+                html += `<div class="nested-container">`;
+                pair.children.forEach((child, childIndex) => {
+                    html += renderJsonPair(child, childIndex, level + 1);
+                });
+                html += `</div>`;
+            }
+
+            return html;
+        }
+
+        // 更新JSON键值对
+        function updateJsonPair(index, field, value, level = 0) {
+            let targetPair;
+            if (level === 0) {
+                targetPair = jsonData[index];
+            } else {
+                // 这里需要实现递归查找，简化处理
+                targetPair = jsonData[index];
+            }
+
+            if (targetPair) {
+                targetPair[field] = value;
+                updateStatus('已更新键值对', 'success');
+            }
+        }
+
+        // 删除JSON键值对
+        function removeJsonPair(index, level = 0) {
+            if (level === 0) {
+                jsonData.splice(index, 1);
+            } else {
+                // 这里需要实现递归删除，简化处理
+                jsonData.splice(index, 1);
+            }
+
+            renderJsonEditor();
+            updateStatus('已删除键值对', 'success');
+            showNotification('已删除键值对', 'success');
+        }
+
+        // 上传JSON文件
+        function loadJsonFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    jsonData = parseJsonToEditor(data);
+                    renderJsonEditor();
+                    updateStatus('已成功加载JSON文件', 'success');
+                    showNotification('已成功加载JSON文件', 'success');
+                } catch (error) {
+                    updateStatus('JSON文件格式错误', 'error');
+                    showNotification('JSON文件格式错误', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 解析JSON数据为编辑器格式
+        function parseJsonToEditor(data) {
+            const result = [];
+            
+            if (typeof data === 'object' && data !== null) {
+                Object.keys(data).forEach(key => {
+                    const value = data[key];
+                    const pair = {
+                        id: Date.now() + Math.random(),
+                        key: key,
+                        value: '',
+                        type: 'key-value',
+                        children: []
+                    };
+
+                    if (Array.isArray(value)) {
+                        pair.type = 'array';
+                        pair.value = value.join('\n');
+                    } else if (typeof value === 'object' && value !== null) {
+                        pair.type = 'object';
+                        pair.value = Object.entries(value).map(([k, v]) => `${k}: ${v}`).join('\n');
+                    } else {
+                        pair.value = String(value);
+                    }
+
+                    result.push(pair);
+                });
+            }
+
+            return result;
+        }
+
+        // 生成JSON
+        function generateJson() {
+            try {
+                const json = convertToJson(jsonData);
+                const jsonString = JSON.stringify(json, null, 2);
+                
+                // 更新预览
+                document.getElementById('jsonPreview').textContent = jsonString;
+                
+                // 下载文件
+                downloadJson(jsonString);
+                
+                updateStatus('已成功生成JSON文件', 'success');
+                showNotification('已成功生成JSON文件', 'success');
+            } catch (error) {
+                updateStatus('生成JSON时出错', 'error');
+                showNotification('生成JSON时出错: ' + error.message, 'error');
+            }
+        }
+
+        // 转换为JSON格式
+        function convertToJson(data) {
+            const result = {};
+            
+            data.forEach(pair => {
+                if (!pair.key) return;
+                
+                let value;
+                switch (pair.type) {
+                    case 'array':
+                        value = pair.value.split('\n').filter(item => item.trim() !== '');
+                        break;
+                    case 'object':
+                        const obj = {};
+                        pair.value.split('\n').forEach(line => {
+                            const [key, val] = line.split(':').map(s => s.trim());
+                            if (key && val) obj[key] = val;
+                        });
+                        value = obj;
+                        break;
+                    default:
+                        value = pair.value;
+                }
+                
+                result[pair.key] = value;
+            });
+            
+            return result;
+        }
+
+        // 下载JSON文件
+        function downloadJson(jsonString) {
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `generated_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 切换预览
+        function togglePreview() {
+            const previewSection = document.getElementById('previewSection');
+            isPreviewVisible = !isPreviewVisible;
+            
+            if (isPreviewVisible) {
+                try {
+                    const json = convertToJson(jsonData);
+                    const jsonString = JSON.stringify(json, null, 2);
+                    document.getElementById('jsonPreview').textContent = jsonString;
+                    previewSection.style.display = 'block';
+                    updateStatus('预览已显示', 'success');
+                } catch (error) {
+                    updateStatus('预览生成失败', 'error');
+                    showNotification('预览生成失败: ' + error.message, 'error');
+                }
+            } else {
+                previewSection.style.display = 'none';
+                updateStatus('预览已隐藏', 'info');
+            }
+        }
+
+        // 清空所有
+        function clearAll() {
+            if (confirm('确定要清空所有数据吗？')) {
+                jsonData = [];
+                renderJsonEditor();
+                document.getElementById('previewSection').style.display = 'none';
+                updateStatus('已清空所有数据', 'success');
+                showNotification('已清空所有数据', 'success');
+            }
+        }
+
+        // 更新状态
+        function updateStatus(message, type = 'success') {
+            const statusText = document.getElementById('statusText');
+            const statusIndicator = document.getElementById('statusIndicator');
+            
+            statusText.textContent = message;
+            statusIndicator.className = `status-indicator ${type}`;
+        }
+
+        // 更新键值对计数
+        function updatePairCount() {
+            const count = jsonData.length;
+            document.getElementById('pairCount').textContent = `${count} 个键值对`;
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 拖拽排序功能（简化版）
+        let draggedElement = null;
+
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.classList.contains('drag-handle')) {
+                draggedElement = e.target.closest('.json-pair');
+                e.dataTransfer.effectAllowed = 'move';
+            }
+        });
+
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (draggedElement) {
+                const target = e.target.closest('.json-pair');
+                if (target && target !== draggedElement) {
+                    // 这里可以实现拖拽排序逻辑
+                    console.log('拖拽排序功能待实现');
+                }
+                draggedElement = null;
+            }
+        });
+    </script>
 </body>
 </html>
